@@ -71,12 +71,21 @@ void saveToFile() {
     printf("Error opening file for writing.\n");
     return;
   }
+
   for (int i = 0; i < studentCount; i++) {
-    fprintf(fp, "%d,%s", students[i].roll_no, students[i].name);
-    for (int j = 0; j < SUBJECTS; j++)
-      fprintf(fp, ",%.2f", students[i].marks[j]);
-    fprintf(fp, ",%.2f\n", students[i].sgpa);
+    Student* s = &students[i];
+    // roll_no, name, subjectCount
+    fprintf(fp, "%d,%s,%d", s->roll_no, s->name, s->subjectCount);
+
+    // each subject: name, marks, credits
+    for (int j = 0; j < s->subjectCount; j++) {
+      fprintf(fp, ",%s,%.2f,%d", s->subjects[j], s->marks[j], s->credits[j]);
+    }
+
+    // SGPA at the end
+    fprintf(fp, ",%.2f\n", s->sgpa);
   }
+
   fclose(fp);
 }
 
@@ -84,12 +93,26 @@ void loadFromFile() {
   FILE* fp = fopen(FILENAME, "r");
   if (!fp) return;  // No file yet
   studentCount = 0;
-  Student s;
-  while (fscanf(fp, "%d,%49[^,],%f,%f,%f,%f,%f,%f\n", &s.roll_no, s.name,
-                &s.marks[0], &s.marks[1], &s.marks[2], &s.marks[3], &s.marks[4],
-                &s.sgpa) == 8) {
+
+  while (!feof(fp)) {
+    Student s;
+    if (fscanf(fp, "%d,%49[^,],%d", &s.roll_no, s.name, &s.subjectCount) != 3)
+      break;
+
+    for (int j = 0; j < s.subjectCount; j++) {
+      if (fscanf(fp, ",%49[^,],%f,%d", s.subjects[j], &s.marks[j],
+                 &s.credits[j]) != 3)
+        break;
+    }
+
+    fscanf(fp, ",%f\n", &s.sgpa);
+
+    // Recalculate SGPA to ensure consistency
+    s.sgpa = calculateSGPA(&s);
+
     students[studentCount++] = s;
   }
+
   fclose(fp);
 }
 
@@ -141,15 +164,23 @@ void displayStudents() {
     printf("No students available.\n");
     return;
   }
+
   printf("\n%-5s %-20s ", "Roll", "Name");
-  for (int i = 0; i < students[i].subjectCount; i++) printf("Sub%d ", i + 1);
+
+  // Use the first student's subject names for header
+  for (int j = 0; j < students[0].subjectCount; j++)
+    printf("%-10s ", students[0].subjects[j]);
+
   printf("SGPA\n");
-  printf("-------------------------------------------------------------\n");
+  printf(
+      "------------------------------------------------------------------------"
+      "-------\n");
+
   for (int i = 0; i < studentCount; i++) {
     printf("%-5d %-20s ", students[i].roll_no, students[i].name);
     for (int j = 0; j < students[i].subjectCount; j++)
-      printf("%5.1f ", students[i].marks[j]);
-    printf("%5.2f\n", students[i].sgpa);
+      printf("%-10.1f ", students[i].marks[j]);
+    printf("%-5.2f\n", students[i].sgpa);
   }
 }
 
