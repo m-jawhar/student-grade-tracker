@@ -20,6 +20,20 @@ Student students[MAX_STUDENTS];
 int studentCount = 0;
 
 /* ---------- Utility Functions ---------- */
+void printBarGraph(Student s) {
+  printf("\nPerformance Graph for %s (Roll %d):\n", s.name, s.roll_no);
+  for (int i = 0; i < s.subjectCount; i++) {
+    int bars = (int)(s.marks[i] / 10);  // 1 '#' per 10 marks
+    printf("%-8s:", s.subjects[i]);
+    for (int j = 0; j < bars; j++) printf("#");
+    printf(" (%.1f)\n", s.marks[i]);
+  }
+  printf("SGPA     : ");
+  int gpaBars = (int)(s.sgpa);  // 1 '#' per GPA point
+  for (int j = 0; j < gpaBars; j++) printf("#");
+  printf(" (%.2f)\n", s.sgpa);
+}
+
 int getGradePoint(float marks) {
   if (marks >= 90)
     return 10;
@@ -93,11 +107,13 @@ void loadFromFile() {
   FILE* fp = fopen(FILENAME, "r");
   if (!fp) return;  // No file yet
   studentCount = 0;
-
-  while (!feof(fp)) {
+  while (!feof(fp) && studentCount < MAX_STUDENTS) {
     Student s;
     if (fscanf(fp, "%d,%49[^,],%d", &s.roll_no, s.name, &s.subjectCount) != 3)
       break;
+
+    if (s.subjectCount > SUBJECTS) s.subjectCount = SUBJECTS;
+    if (s.subjectCount < 0) s.subjectCount = 0;
 
     for (int j = 0; j < s.subjectCount; j++) {
       if (fscanf(fp, ",%49[^,],%f,%d", s.subjects[j], &s.marks[j],
@@ -118,6 +134,10 @@ void loadFromFile() {
 
 /* ---------- Core Features ---------- */
 void addStudent() {
+  if (studentCount >= MAX_STUDENTS) {
+    printf("Cannot add more students. Limit reached.\n");
+    return;
+  }
   Student s;
   printf("Enter roll number: ");
   scanf("%d", &s.roll_no);
@@ -128,6 +148,9 @@ void addStudent() {
 
   printf("Enter number of subjects: ");
   scanf("%d", &s.subjectCount);
+
+  if (s.subjectCount > SUBJECTS) s.subjectCount = SUBJECTS;
+  if (s.subjectCount < 0) s.subjectCount = 0;
 
   for (int i = 0; i < s.subjectCount; i++) {
     getchar();
@@ -238,6 +261,49 @@ void showStatistics() {
   printf("Class Average SGPA: %.2f\n", total / studentCount);
   printf("Topper: %s (Roll %d) SGPA: %.2f\n", students[topperIndex].name,
          students[topperIndex].roll_no, students[topperIndex].sgpa);
+
+  printf("Enter roll number to show bar graph: ");
+  int roll;
+  scanf("%d", &roll);
+  for (int i = 0; i < studentCount; i++) {
+    if (students[i].roll_no == roll) {
+      printBarGraph(students[i]);
+    }
+  }
+}
+
+void showRankList() {
+  if (studentCount == 0) {
+    printf("No students available.\n");
+    return;
+  }
+
+  // Create a temporary copy to sort
+  Student temp[MAX_STUDENTS];
+  for (int i = 0; i < studentCount; i++) {
+    temp[i] = students[i];
+  }
+
+  // Sort by SGPA (descending)
+  for (int i = 0; i < studentCount - 1; i++) {
+    for (int j = i + 1; j < studentCount; j++) {
+      if (temp[i].sgpa < temp[j].sgpa) {
+        Student swap = temp[i];
+        temp[i] = temp[j];
+        temp[j] = swap;
+      }
+    }
+  }
+
+  printf("\n=== SGPA Rank List ===\n");
+  for (int i = 0; i < studentCount; i++) {
+    printf("%2d. %-20s (Roll %d) SGPA: %.2f | ", i + 1, temp[i].name,
+           temp[i].roll_no, temp[i].sgpa);
+
+    int bars = (int)(temp[i].sgpa);  // 1 bar = 1 SGPA point
+    for (int b = 0; b < bars; b++) printf("#");
+    printf("\n");
+  }
 }
 
 /* ---------- Menu ---------- */
@@ -248,7 +314,8 @@ void showMenu() {
   printf("3. Update Student\n");
   printf("4. Delete Student\n");
   printf("5. Show Statistics\n");
-  printf("6. Exit\n");
+  printf("6. Show Leaderboard\n");
+  printf("7. Exit\n");
   printf("Enter choice: ");
 }
 
@@ -275,9 +342,13 @@ int main() {
         showStatistics();
         break;
       case 6:
+        showRankList();
+        break;
+      case 7:
         saveToFile();
         printf("Goodbye!\n");
         exit(0);
+
       default:
         printf("Invalid choice.\n");
     }
