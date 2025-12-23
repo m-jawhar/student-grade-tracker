@@ -34,21 +34,27 @@ void printBarGraph(Student s) {
   printf(" (%.2f)\n", s.sgpa);
 }
 
-int getGradePoint(float marks) {
+float getGradePoint(float marks) {
   if (marks >= 90)
-    return 10;
+    return 10.0;  // S grade
+  else if (marks >= 85)
+    return 9.0;  // A+ grade
   else if (marks >= 80)
-    return 9;
+    return 8.5;  // A grade
+  else if (marks >= 75)
+    return 8.0;  // B+ grade
   else if (marks >= 70)
-    return 8;
+    return 7.5;  // B grade
+  else if (marks >= 65)
+    return 7.0;  // C+ grade
   else if (marks >= 60)
-    return 7;
+    return 6.5;  // C grade
+  else if (marks >= 55)
+    return 6.0;  // D grade
   else if (marks >= 50)
-    return 6;
-  else if (marks >= 40)
-    return 5;
+    return 5.5;  // P (Pass) grade
   else
-    return 0;  // Fail
+    return 0.0;  // F (Fail) - < 50% overall
 }
 
 float calculateSGPA(Student* s) {
@@ -56,7 +62,7 @@ float calculateSGPA(Student* s) {
   float weightedSum = 0.0;
 
   for (int i = 0; i < s->subjectCount; i++) {
-    int gradePoint = getGradePoint(s->marks[i]);
+    float gradePoint = getGradePoint(s->marks[i]);
     weightedSum += s->credits[i] * gradePoint;
     totalCredits += s->credits[i];
   }
@@ -70,7 +76,7 @@ float calculateCGPA(Student arr[], int n) {
   int totalCredits = 0;
   for (int i = 0; i < n; i++) {
     for (int j = 0; j < arr[i].subjectCount; j++) {
-      int gp = getGradePoint(arr[i].marks[j]);
+      float gp = getGradePoint(arr[i].marks[j]);
       totalWeighted += arr[i].credits[j] * gp;
       totalCredits += arr[i].credits[j];
     }
@@ -175,8 +181,8 @@ void displayStudentReport(Student s) {
   printf("%-15s %-10s %-10s %-10s\n", "Subject", "Marks", "Credits",
          "Grade Point");
   for (int i = 0; i < s.subjectCount; i++) {
-    int gp = getGradePoint(s.marks[i]);
-    printf("%-15s %-10.1f %-10d %-10d\n", s.subjects[i], s.marks[i],
+    float gp = getGradePoint(s.marks[i]);
+    printf("%-15s %-10.1f %-10d %-10.1f\n", s.subjects[i], s.marks[i],
            s.credits[i], gp);
   }
   printf("SGPA: %.2f\n", s.sgpa);
