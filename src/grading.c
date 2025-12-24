@@ -25,30 +25,35 @@ float getGradePoint(float marks) {
     return 0.0;  // F (Fail) - < 50% overall
 }
 
-float calculateSGPA(Student* s) {
+float calculateSGPA(Semester* semester) {
   int totalCredits = 0;
   float weightedSum = 0.0;
 
-  for (int i = 0; i < s->subjectCount; i++) {
-    float gradePoint = getGradePoint(s->marks[i]);
-    weightedSum += s->credits[i] * gradePoint;
-    totalCredits += s->credits[i];
+  for (int i = 0; i < semester->subjectCount; i++) {
+    float gradePoint = getGradePoint(semester->marks[i]);
+    weightedSum += semester->credits[i] * gradePoint;
+    totalCredits += semester->credits[i];
   }
 
   if (totalCredits == 0) return 0.0;
   return weightedSum / totalCredits;
 }
 
-float calculateCGPA(Student arr[], int n) {
+float calculateCGPA(Student* student) {
   float totalWeighted = 0.0;
   int totalCredits = 0;
-  for (int i = 0; i < n; i++) {
-    for (int j = 0; j < arr[i].subjectCount; j++) {
-      float gp = getGradePoint(arr[i].marks[j]);
-      totalWeighted += arr[i].credits[j] * gp;
-      totalCredits += arr[i].credits[j];
+
+  // Sum across all completed semesters (1 to currentSemester)
+  for (int sem = 0; sem < student->currentSemester && sem < MAX_SEMESTERS;
+       sem++) {
+    Semester* s = &student->semesters[sem];
+    for (int j = 0; j < s->subjectCount; j++) {
+      float gp = getGradePoint(s->marks[j]);
+      totalWeighted += s->credits[j] * gp;
+      totalCredits += s->credits[j];
     }
   }
+
   if (totalCredits == 0) return 0.0;
   return totalWeighted / totalCredits;
 }

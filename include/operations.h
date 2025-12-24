@@ -2,18 +2,28 @@
 #define OPERATIONS_H
 
 /**
- * Add a new student to the system
+ * Create initial student profile (first time setup)
  */
+void createProfile();
+
+/**
+ * Update student profile information (name, roll number)
+ */
+void updateProfile();
+
+/**
+ * Add or update semester grades
+ */
+void addSemesterData();
+
+/**
+ * View detailed information for a specific semester
+ */
+void viewSemesterDetails();
+
+// Legacy functions for compatibility
 void addStudent();
-
-/**
- * Update marks for an existing student
- */
 void updateStudent();
-
-/**
- * Delete a student by roll number
- */
 void deleteStudent();
 
 #endif  // OPERATIONS_H

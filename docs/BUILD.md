@@ -8,7 +8,7 @@
 ## Project Structure
 
 ```
-Student Management System/
+student-grade-tracker/
 ├── bin/                  # Compiled executables
 ├── build/                # Object files (.o)
 ├── data/                 # Student data (CSV files)

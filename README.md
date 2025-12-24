@@ -1,6 +1,6 @@
-# Student Management System
+# Student Grade Tracker
 
-A comprehensive C-based student management system for tracking academic performance, calculating GPAs, and generating reports. Implements the Mar Athanasius College of Engineering grading system.
+A personal grade tracking system for monitoring your academic performance across semesters, calculating SGPA/CGPA, and visualizing your progress. Implements the Mar Athanasius College of Engineering grading system.
 
 ## 🎯 Features
 
@@ -15,7 +15,7 @@ A comprehensive C-based student management system for tracking academic performa
 ## 📁 Project Structure
 
 ```
-Student Management System/
+student-grade-tracker/
 ├── bin/                  # Compiled executables
 ├── build/                # Object files
 ├── data/                 # Student data (CSV)

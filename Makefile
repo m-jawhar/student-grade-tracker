@@ -1,4 +1,4 @@
-# Student Management System - Makefile
+# Student Grade Tracker - Makefile
 
 # Compiler and flags
 CC = gcc

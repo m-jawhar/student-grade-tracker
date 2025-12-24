@@ -11,18 +11,17 @@
 float getGradePoint(float marks);
 
 /**
- * Calculate SGPA for a student
- * @param s Pointer to Student structure
- * @return SGPA value
+ * Calculate SGPA for a specific semester
+ * @param semester Pointer to Semester structure
+ * @return SGPA value for that semester
  */
-float calculateSGPA(Student* s);
+float calculateSGPA(Semester* semester);
 
 /**
- * Calculate CGPA for multiple students
- * @param arr Array of Student structures
- * @param n Number of students
- * @return CGPA value
+ * Calculate CGPA for a student across all completed semesters
+ * @param student Pointer to Student structure
+ * @return CGPA value across all semesters
  */
-float calculateCGPA(Student arr[], int n);
+float calculateCGPA(Student* student);
 
 #endif  // GRADING_H

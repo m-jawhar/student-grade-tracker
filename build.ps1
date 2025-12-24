@@ -1,4 +1,4 @@
-# Build script for Student Management System
+# Build script for Student Grade Tracker
 # Usage: .\build.ps1 [clean|run|rebuild|help]
 
 param(
@@ -23,7 +23,7 @@ function Create-Directories {
 }
 
 function Build-Project {
-    Write-Host "Building Student Management System..." -ForegroundColor Green
+    Write-Host "Building Student Grade Tracker..." -ForegroundColor Green
 
     Create-Directories
 
@@ -64,12 +64,12 @@ function Run-Program {
         Write-Host "Executable not found. Building first..." -ForegroundColor Yellow
         Build-Project
     }
-    Write-Host "Running Student Management System..." -ForegroundColor Green
+    Write-Host "Running Student Grade Tracker..." -ForegroundColor Green
     & $TARGET_EXE
 }
 
 function Show-Help {
-    Write-Host "Student Management System - Build Script" -ForegroundColor Cyan
+    Write-Host "Student Grade Tracker - Build Script" -ForegroundColor Cyan
     Write-Host ""
     Write-Host "Usage: .\build.ps1 [target]" -ForegroundColor Yellow
     Write-Host ""

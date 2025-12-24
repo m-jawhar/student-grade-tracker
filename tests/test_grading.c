@@ -42,25 +42,23 @@ void test_getGradePoint() {
 void test_calculateSGPA() {
   printf("\nTesting calculateSGPA()...\n");
 
-  Student s;
-  s.roll_no = 1;
-  strcpy(s.name, "Test Student");
-  s.subjectCount = 3;
+  Semester sem;
+  sem.subjectCount = 3;
 
-  strcpy(s.subjects[0], "Math");
-  s.marks[0] = 90.0;  // Grade: 10.0
-  s.credits[0] = 4;
+  strcpy(sem.subjects[0], "Math");
+  sem.marks[0] = 90.0;  // Grade: 10.0
+  sem.credits[0] = 4;
 
-  strcpy(s.subjects[1], "Physics");
-  s.marks[1] = 80.0;  // Grade: 8.5
-  s.credits[1] = 3;
+  strcpy(sem.subjects[1], "Physics");
+  sem.marks[1] = 80.0;  // Grade: 8.5
+  sem.credits[1] = 3;
 
-  strcpy(s.subjects[2], "Chemistry");
-  s.marks[2] = 70.0;  // Grade: 7.5
-  s.credits[2] = 3;
+  strcpy(sem.subjects[2], "Chemistry");
+  sem.marks[2] = 70.0;  // Grade: 7.5
+  sem.credits[2] = 3;
 
   // Expected SGPA = (10*4 + 8.5*3 + 7.5*3) / (4+3+3) = 88/10 = 8.8
-  float sgpa = calculateSGPA(&s);
+  float sgpa = calculateSGPA(&sem);
   assert(sgpa > 8.79 && sgpa < 8.81);
 
   printf("✓ calculateSGPA test passed! SGPA = %.2f\n", sgpa);
@@ -69,25 +67,35 @@ void test_calculateSGPA() {
 void test_calculateCGPA() {
   printf("\nTesting calculateCGPA()...\n");
 
-  Student students[2];
+  Student student;
+  student.roll_no = 1;
+  strcpy(student.name, "Test Student");
+  student.currentSemester = 2;
+  student.cgpa = 0.0;
 
-  // Student 1
-  students[0].subjectCount = 2;
-  students[0].marks[0] = 90.0;  // Grade: 10.0
-  students[0].credits[0] = 4;
-  students[0].marks[1] = 80.0;  // Grade: 8.5
-  students[0].credits[1] = 4;
+  // Semester 1
+  student.semesters[0].subjectCount = 2;
+  strcpy(student.semesters[0].subjects[0], "Math");
+  student.semesters[0].marks[0] = 90.0;  // Grade: 10.0
+  student.semesters[0].credits[0] = 4;
+  strcpy(student.semesters[0].subjects[1], "Physics");
+  student.semesters[0].marks[1] = 80.0;  // Grade: 8.5
+  student.semesters[0].credits[1] = 4;
+  student.semesters[0].sgpa = calculateSGPA(&student.semesters[0]);
 
-  // Student 2
-  students[1].subjectCount = 2;
-  students[1].marks[0] = 70.0;  // Grade: 7.5
-  students[1].credits[0] = 3;
-  students[1].marks[1] = 60.0;  // Grade: 6.5
-  students[1].credits[1] = 3;
+  // Semester 2
+  student.semesters[1].subjectCount = 2;
+  strcpy(student.semesters[1].subjects[0], "Chemistry");
+  student.semesters[1].marks[0] = 70.0;  // Grade: 7.5
+  student.semesters[1].credits[0] = 3;
+  strcpy(student.semesters[1].subjects[1], "Biology");
+  student.semesters[1].marks[1] = 60.0;  // Grade: 6.5
+  student.semesters[1].credits[1] = 3;
+  student.semesters[1].sgpa = calculateSGPA(&student.semesters[1]);
 
   // Expected CGPA = (10*4 + 8.5*4 + 7.5*3 + 6.5*3) / (4+4+3+3) = 116/14
   // = 8.285...
-  float cgpa = calculateCGPA(students, 2);
+  float cgpa = calculateCGPA(&student);
   assert(cgpa > 8.28 && cgpa < 8.29);
 
   printf("✓ calculateCGPA test passed! CGPA = %.2f\n", cgpa);
@@ -96,25 +104,31 @@ void test_calculateCGPA() {
 void test_edge_cases() {
   printf("\nTesting edge cases...\n");
 
-  Student s;
-  s.subjectCount = 0;
+  Semester sem;
+  sem.subjectCount = 0;
 
   // Test with zero subjects
-  float sgpa = calculateSGPA(&s);
+  float sgpa = calculateSGPA(&sem);
   assert(sgpa == 0.0);
 
   // Test with zero credits
-  s.subjectCount = 1;
-  s.marks[0] = 90.0;
-  s.credits[0] = 0;
-  sgpa = calculateSGPA(&s);
+  sem.subjectCount = 1;
+  sem.marks[0] = 90.0;
+  sem.credits[0] = 0;
+  sgpa = calculateSGPA(&sem);
   assert(sgpa == 0.0);
+
+  // Test CGPA with no completed semesters
+  Student student;
+  student.currentSemester = 0;
+  float cgpa = calculateCGPA(&student);
+  assert(cgpa == 0.0);
 
   printf("✓ Edge case tests passed!\n");
 }
 
 int main(void) {
-  printf("=== Running Student Management System Tests ===\n\n");
+  printf("=== Running Student Grade Tracker Tests ===\n\n");
 
   test_getGradePoint();
   test_calculateSGPA();
