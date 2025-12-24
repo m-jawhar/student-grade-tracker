@@ -1,0 +1,36 @@
+# Build directories
+bin/
+build/
+*.exe
+*.o
+*.obj
+*.out
+
+# Data files (optional - uncomment if you don't want to track student data)
+# data/*.csv
+
+# IDE and Editor files
+.vscode/
+.vs/
+*.swp
+*.swo
+*~
+.idea/
+
+# OS specific
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Compilation database
+compile_commands.json
+
+# Backup files
+*.bak
+*.backup
+
+# Old single-file version
+studentSystem.c
+studentSystem.exe
+studentSystem.o
+
